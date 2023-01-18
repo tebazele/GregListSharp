@@ -23,4 +23,54 @@ public class JobsRepository
         jobData.Id = id;
         return jobData;
     }
+
+    internal List<Job> Get()
+    {
+        string sql = @"
+        SELECT 
+        *
+        FROM jobs;
+        ";
+        List<Job> jobs = _db.Query<Job>(sql).ToList();
+        return jobs;
+    }
+
+    internal Job Get(int id)
+    {
+        string sql = @"
+        SELECT 
+        *
+        FROM jobs
+        WHERE id = @id;
+        ";
+        Job job = _db.Query<Job>(sql, new { id }).FirstOrDefault();
+        return job;
+    }
+
+    internal bool Remove(int id)
+    {
+        string sql = @"
+        DELETE FROM jobs
+        WHERE id = @id;
+        ";
+        int rows = _db.Execute(sql, new { id });
+        return rows > 0;
+    }
+
+    internal bool Update(Job original)
+    {
+        string sql = @"
+        UPDATE jobs
+            SET 
+                title = @title, 
+                company = @company, 
+                fullTime = @fullTime, 
+                hourlyRate = @hourlyRate, 
+                imgUrl = @imgUrl, 
+                description = @description
+            WHERE id = @id; 
+        ";
+        int rows = _db.Execute(sql, original);
+        return rows > 0;
+    }
 }
